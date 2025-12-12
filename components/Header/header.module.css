@@ -1,3 +1,15 @@
+:root {
+  --header-height: 80px;
+  --container-width: 1200px;
+  --primary-blue: #003366;
+  --accent-red: #dc2626;
+  --accent-red-light: #fecaca;
+  --medical-white: #ffffff;
+  --text-dark: #1a202c;
+  --text-light: #4a5568;
+  --transition-speed: 0.3s;
+}
+
 .header {
   position: sticky;
   top: 0;
@@ -5,25 +17,32 @@
   background-color: var(--medical-white);
   height: var(--header-height);
   border-bottom: 3px solid var(--accent-red);
-  display: flex;
-  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.header.scrolled {
+  height: 70px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .container {
   width: 100%;
   max-width: var(--container-width);
+  height: 100%;
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 
 .logo a {
   display: flex;
   flex-direction: column;
   line-height: 1.2;
+  text-decoration: none;
+  z-index: 1002;
 }
 
 .brandName {
@@ -32,6 +51,7 @@
   color: var(--primary-blue);
   text-transform: uppercase;
   letter-spacing: -1px;
+  transition: all 0.3s ease;
 }
 
 .brandSub {
@@ -39,8 +59,10 @@
   color: var(--text-light);
   font-weight: 500;
   letter-spacing: 1px;
+  transition: all 0.3s ease;
 }
 
+/* Desktop Navigation */
 .nav {
   display: flex;
   gap: 30px;
@@ -51,14 +73,34 @@
   color: var(--text-dark);
   font-size: 16px;
   position: relative;
-  transition: color 0.2s ease;
+  transition: color var(--transition-speed) ease;
+  text-decoration: none;
 }
 
 .navLink:hover {
-  color: var(--primary-blue);
+  color: var(--accent-red);
 }
 
-/* Sharp skewed button style */
+.navLink::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 0;
+  background-color: var(--accent-red);
+  transition: width var(--transition-speed) ease;
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+/* CTA Button */
+.ctaWrapper {
+  z-index: 1001;
+}
+
 .ctaButton {
   display: inline-block;
   background: var(--primary-blue);
@@ -68,26 +110,186 @@
   text-transform: uppercase;
   font-size: 14px;
   transform: skewX(-15deg);
-  /* Slanted edges */
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: all var(--transition-speed) ease;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
 }
 
 .ctaButton:hover {
   transform: skewX(-15deg) translateY(-2px);
   background: var(--accent-red);
   box-shadow: 4px 4px 0 var(--accent-red-light);
-  /* Brutalist shadow */
 }
 
 .ctaContent {
   display: inline-block;
   transform: skewX(15deg);
-  /* Counter skew for text */
+}
+
+/* Mobile Menu Button */
+.menuButton {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--primary-blue);
+  cursor: pointer;
+  padding: 10px;
+  z-index: 1002;
+  transition: all var(--transition-speed) ease;
+}
+
+.menuButton:hover {
+  color: var(--accent-red);
+}
+
+/* Mobile Menu Overlay */
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  max-width: 400px;
+  height: 100vh;
+  background-color: var(--medical-white);
+  z-index: 1000;
+  transition: right 0.4s ease-in-out;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+  padding-top: 100px;
+  overflow-y: auto;
+}
+
+.mobileMenu.menuOpen {
+  right: 0;
+}
+
+.mobileMenuContent {
+  padding: 20px;
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.mobileNavLink {
+  display: block;
+  padding: 15px 20px;
+  color: var(--text-dark);
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--transition-speed) ease;
+  border-radius: 8px;
+}
+
+.mobileNavLink:not(.mobileCta):hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--accent-red);
+  padding-left: 25px;
+}
+
+.mobileCta {
+  background-color: var(--accent-red);
+  color: white !important;
+  text-align: center;
+  margin-top: 20px;
+  padding: 15px 20px !important;
+  border-radius: 8px;
+  font-weight: 700 !important;
+}
+
+.mobileCta:hover {
+  background-color: #b91c1c !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
+/* Backdrop for mobile menu */
+.mobileMenu::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.mobileMenu.menuOpen::before {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .nav {
+    gap: 20px;
+  }
+  
+  .navLink {
+    font-size: 15px;
+  }
+  
+  .ctaButton {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 768px) {
-  .nav {
+  .header {
+    height: 70px;
+  }
+  
+  .header.scrolled {
+    height: 60px;
+  }
+  
+  .nav, 
+  .ctaWrapper {
     display: none;
-    /* Mobile menu implementation needed later */
+  }
+  
+  .menuButton {
+    display: block;
+  }
+  
+  .mobileMenu {
+    display: block;
+  }
+  
+  .logo a {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .brandName {
+    font-size: 22px;
+  }
+  
+  .brandSub {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobileMenu {
+    max-width: 100%;
+  }
+  
+  .brandName {
+    font-size: 20px;
+  }
+  
+  .brandSub {
+    font-size: 10px;
   }
 }
