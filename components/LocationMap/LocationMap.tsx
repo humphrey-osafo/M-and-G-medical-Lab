@@ -21,7 +21,7 @@ export default function LocationMap() {
                     </div>
                     <div className={styles.detailItem}>
                         <Clock className={styles.icon} />
-                        <p>Mon - Fri: 7am - 5pm<br />Sat: 8am - 2pm</p>
+                        <p>Open 24/7</p>
                     </div>
                 </div>
 

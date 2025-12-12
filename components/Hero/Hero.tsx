@@ -28,7 +28,7 @@ export default function Hero() {
                         <span className={styles.highlight}>Patient-Centered Care.</span>
                     </h1>
                     <p className={styles.subtitle}>
-                        Fast, accurate results from Accra’s internationally recognized laboratory.
+                        Fast, accurate results from Accra's internationally recognized laboratory established since 1996
                     </p>
                     <div className={styles.ctaGroup}>
                         <Link href="/booking" className={styles.primaryBtn}>
