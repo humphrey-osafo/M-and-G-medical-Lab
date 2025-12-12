@@ -10,7 +10,7 @@ const reasons = [
 ];
 
 // Function to check if image exists
-async function checkImageExists(url) {
+async function checkImageExists(url: string) {
   try {
     const response = await fetch(url, { method: 'HEAD' });
     return response.ok;
