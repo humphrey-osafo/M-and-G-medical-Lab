@@ -1,0 +1,143 @@
+.section {
+  padding: 100px 0;
+  background: var(--light-gray);
+  clip-path: polygon(0 0, 100% 50px, 100% 100%, 0 100%);
+  /* Slanted top */
+  margin-top: -50px;
+  /* Overlap with previous section */
+  position: relative;
+  z-index: 2;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--secondary-blue);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: var(--text-light);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.card {
+  background: white;
+  padding: 40px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  position: relative;
+  border-radius: 0;
+  /* Sharp edges */
+  /* Made card a position reference for overlay and updated background properties */
+  background-attachment: fixed;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Added overlay for background images to improve text contrast */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 1;
+}
+
+/* Added content wrapper to position text above overlay */
+.content {
+  position: relative;
+  z-index: 2;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-blue);
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  /* Changed accent bar to red */
+  background: var(--accent-red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+  z-index: 3;
+}
+
+.card:hover::after {
+  transform: scaleX(1);
+}
+
+.iconWrapper {
+  color: white;
+  margin-bottom: 24px;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  /* Changed text color to white for visibility on background images */
+  color: white;
+}
+
+.cardDesc {
+  /* Changed text color to light gray for visibility */
+  color: #e2e8f0;
+  line-height: 1.6;
+}
+
+.ctaWrapper {
+  text-align: center;
+}
+
+.viewAllBtn {
+  display: inline-block;
+  padding: 16px 32px;
+  background: transparent;
+  /* Red border on button */
+  border: 2px solid var(--accent-red);
+  color: var(--accent-red);
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.viewAllBtn:hover {
+  /* Red background on hover */
+  background: var(--accent-red);
+  color: white;
+}
