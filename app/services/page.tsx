@@ -6,12 +6,12 @@ const servicesList = [
     {
         category: "Laboratory Services",
         items: [
-            { name: "Full Blood Count (FBC)", price: "GHS 80", tat: "1 Hour" },
-            { name: "Malaria Parasite Test", price: "GHS 50", tat: "1 Hour" },
+            { name: "Full Blood Count (FBC)", price: "GHS 50", tat: "1 Hour" },
+            { name: "Malaria Parasite Test", price: "GHS 30", tat: "1 Hour" },
             { name: "Liver Function Test", price: "GHS 150", tat: "4 Hours" },
-            { name: "Lipid Profile", price: "GHS 140", tat: "4 Hours" },
-            { name: "Kidney Function Test", price: "GHS 150", tat: "4 Hours" },
-            { name: "Widal Test (Typhoid)", price: "GHS 60", tat: "1 Hour" }
+            { name: "Lipid Profile", price: "GHS 100", tat: "4 Hours" },
+            { name: "Kidney Function Test", price: "GHS 100", tat: "4 Hours" },
+            { name: "Widal Test (Typhoid)", price: "GHS 50", tat: "1 Hour" }
         ]
     },
     {
@@ -27,7 +27,7 @@ const servicesList = [
         category: "Imaging & Others",
         items: [
             { name: "Ultrasound Scan", price: "GHS 150", tat: "Immediate" },
-            { name: "ECG", price: "GHS 100", tat: "Immediate" },
+            { name: "Electrocardiogram (ECG)", price: "---", tat: "Immediate" },
             { name: "Medical Counselling", price: "---", tat: "immediate" }
         ]
     },
