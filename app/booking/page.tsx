@@ -1,24 +1,63 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './booking.module.css';
+import { getAllServices } from '../data/services';
 
 export default function BookingPage() {
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
-        testType: '',
+        email: '',
+        service: '',
         date: '',
-        time: ''
+        time: '',
+        additionalMessage: ''
     });
+    const [statusMessage, setStatusMessage] = useState('');
+    const [services, setServices] = useState<Array<{name: string, price: string, category: string}>>([]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    useEffect(() => {
+        // Load services when component mounts
+        const services = getAllServices();
+        setServices(services);
+    }, []);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        alert('Appointment request sent! We will contact you shortly to confirm.');
-        // Here you would typically integrate with a backend
+        setStatusMessage('Sending...');
+
+        try {
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                setStatusMessage('Appointment request sent successfully!');
+                setFormData({
+                    name: '',
+                    phone: '',
+                    email: '',
+                    service: '',
+                    date: '',
+                    time: '',
+                    additionalMessage: ''
+                });
+            } else {
+                setStatusMessage(`Error: ${result.message}`);
+            }
+        } catch (error) {
+            setStatusMessage('Error: Could not send appointment request.');
+        }
     };
 
     return (
@@ -41,32 +80,45 @@ export default function BookingPage() {
                             />
                         </div>
 
-                        <div className={styles.formGroup}>
-                            <label>Phone Number</label>
-                            <input
-                                type="tel"
-                                name="phone"
-                                required
-                                className={styles.input}
-                                value={formData.phone}
-                                onChange={handleChange}
-                            />
+                        <div className={styles.row}>
+                            <div className={styles.formGroup}>
+                                <label>Phone Number</label>
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    required
+                                    className={styles.input}
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>Email (Optional)</label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    className={styles.input}
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                />
+                            </div>
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label>Test Type</label>
+                            <label>Service</label>
                             <select
-                                name="testType"
+                                name="service"
+                                required
                                 className={styles.select}
-                                value={formData.testType}
+                                value={formData.service}
                                 onChange={handleChange}
                             >
                                 <option value="">Select a service...</option>
-                                <option value="General Checkup">General Checkup</option>
-                                <option value="Malaria Test">Malaria Test</option>
-                                <option value="Blood Work">Blood Work</option>
-                                <option value="Ultrasound">Ultrasound</option>
-                                <option value="Home Collection">Home Sample Collection</option>
+                                {services.map((service, index) => (
+                                    <option key={index} value={service.name}>
+                                        {service.name}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
@@ -95,9 +147,21 @@ export default function BookingPage() {
                             </div>
                         </div>
 
+                        <div className={styles.formGroup}>
+                            <label>Additional Message (Optional)</label>
+                            <textarea
+                                name="additionalMessage"
+                                rows={4}
+                                className={styles.textarea}
+                                value={formData.additionalMessage}
+                                onChange={handleChange}
+                            ></textarea>
+                        </div>
+
                         <button type="submit" className={styles.submitBtn}>
-                            Confirm Booking
+                            Book Appointment
                         </button>
+                        {statusMessage && <p className={styles.statusMessage}>{statusMessage}</p>}
                     </form>
                 </div>
             </div>
