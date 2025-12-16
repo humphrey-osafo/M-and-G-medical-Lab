@@ -6,6 +6,16 @@ export async function POST(request: Request) {
   try {
     const { name, phone, email, service, date, time, additionalMessage } = await request.json();
 
+    // Debug log environment variables
+    console.log('Environment Variables:', {
+      host: process.env.EMAIL_SERVER_HOST,
+      port: process.env.EMAIL_SERVER_PORT,
+      user: process.env.EMAIL_SERVER_USER,
+      from: process.env.EMAIL_FROM,
+      to: process.env.EMAIL_TO,
+      hasPassword: !!process.env.EMAIL_SERVER_PASSWORD
+    });
+
     // Create a transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_SERVER_HOST,
