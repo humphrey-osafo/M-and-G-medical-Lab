@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     });
 
     // Create a transporter object using the environment variables
-    const transporter = nodemailer.createTransport({
+    const transporterOptions: any = {
       host: process.env.EMAIL_SERVER_HOST,
       port: Number(process.env.EMAIL_SERVER_PORT),
       secure: true, // Use true for port 465, false for other ports
@@ -37,9 +37,25 @@ export async function POST(request: Request) {
         user: process.env.EMAIL_SERVER_USER,
         pass: process.env.EMAIL_SERVER_PASSWORD,
       },
-    });
+    };
 
+    // For development, you might need to allow self-signed certificates
+    if (process.env.NODE_ENV !== 'production') {
+      transporterOptions.tls = {
+        rejectUnauthorized: false,
+      };
+    }
 
+    const transporter = nodemailer.createTransport(transporterOptions);
+
+    // Verify connection configuration
+    try {
+      await transporter.verify();
+      console.log('Server is ready to take our messages');
+    } catch (verifyError) {
+      console.error('SMTP connection verification failed:', verifyError);
+      // Still try to send email, but log the verification error
+    }
 
     const emailHtml = `
       <h1>New Appointment Booking Request</h1>
