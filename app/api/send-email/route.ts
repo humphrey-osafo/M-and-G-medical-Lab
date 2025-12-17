@@ -19,6 +19,15 @@ export async function POST(request: Request) {
 
 
 
+    // Log the environment variables being used (for debugging)
+    console.log('Using email configuration:', {
+      host: process.env.EMAIL_SERVER_HOST,
+      port: process.env.EMAIL_SERVER_PORT,
+      user: process.env.EMAIL_SERVER_USER,
+      from: process.env.EMAIL_FROM,
+      to: process.env.EMAIL_TO,
+    });
+
     // Create a transporter object using the environment variables
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_SERVER_HOST,
