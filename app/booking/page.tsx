@@ -4,6 +4,7 @@ import styles from './booking.module.css';
 import { getAllServices } from '../data/services';
 
 export default function BookingPage() {
+    // State for form inputs
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
@@ -13,36 +14,52 @@ export default function BookingPage() {
         time: '',
         additionalMessage: ''
     });
-    const [statusMessage, setStatusMessage] = useState('');
+
+    // State for submission status
+    const [isLoading, setIsLoading] = useState(false);
+    const [result, setResult] = useState("");
+    const [isError, setIsError] = useState(false);
+
+    // State for services dropdown
     const [services, setServices] = useState<Array<{name: string, price: string, category: string}>>([]);
 
     useEffect(() => {
-        // Load services when component mounts
-        const services = getAllServices();
-        setServices(services);
+        const servicesData = getAllServices();
+        setServices(servicesData);
     }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setStatusMessage('Sending...');
+        setIsLoading(true);
+        setResult("");
+        setIsError(false);
+
+        const formElement = e.currentTarget;
+        const web3FormData = new FormData(formElement);
+        
+        // Append Web3Forms specific data
+        web3FormData.append("access_key", "3f84013f-1fd1-49ce-b552-b9dcbdbed6aa");
+        web3FormData.append("subject", "New Appointment Booking - M&G Medical Lab");
+        web3FormData.append("from_name", "M&G Medical Lab");
+        web3FormData.append("replyto", formData.email); // Set user's email for reply-to
 
         try {
-            const response = await fetch('/api/send-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+            const response = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                body: web3FormData,
             });
 
-            const result = await response.json();
+            const data = await response.json();
 
-            if (response.ok) {
-                setStatusMessage('Appointment request sent successfully!');
+            if (data.success) {
+                setResult("Appointment request sent successfully! We will be in touch shortly.");
+                setIsError(false);
+                // Reset form fields and state
+                formElement.reset(); 
                 setFormData({
                     name: '',
                     phone: '',
@@ -53,13 +70,19 @@ export default function BookingPage() {
                     additionalMessage: ''
                 });
             } else {
-                setStatusMessage(`Error: ${result.message}`);
+                console.error("Error from Web3Forms:", data);
+                setResult(data.message || "Failed to send appointment request. Please try again.");
+                setIsError(true);
             }
         } catch (error) {
-            setStatusMessage('Error: Could not send appointment request.');
+            console.error("Submission error:", error);
+            setResult("An error occurred while sending your request. Please check your connection and try again.");
+            setIsError(true);
+        } finally {
+            setIsLoading(false);
         }
     };
-
+    
     return (
         <div className={styles.page}>
             <div className={styles.container}>
@@ -77,6 +100,7 @@ export default function BookingPage() {
                                 className={styles.input}
                                 value={formData.name}
                                 onChange={handleChange}
+                                disabled={isLoading}
                             />
                         </div>
 
@@ -90,16 +114,18 @@ export default function BookingPage() {
                                     className={styles.input}
                                     value={formData.phone}
                                     onChange={handleChange}
+                                    disabled={isLoading}
                                 />
                             </div>
                             <div className={styles.formGroup}>
-                                <label>Email (Optional)</label>
+                                <label>Email (Optional, for confirmation)</label>
                                 <input
                                     type="email"
                                     name="email"
                                     className={styles.input}
                                     value={formData.email}
                                     onChange={handleChange}
+                                    disabled={isLoading}
                                 />
                             </div>
                         </div>
@@ -112,6 +138,7 @@ export default function BookingPage() {
                                 className={styles.select}
                                 value={formData.service}
                                 onChange={handleChange}
+                                disabled={isLoading}
                             >
                                 <option value="">Select a service...</option>
                                 {services.map((service, index) => (
@@ -132,6 +159,7 @@ export default function BookingPage() {
                                     className={styles.input}
                                     value={formData.date}
                                     onChange={handleChange}
+                                    disabled={isLoading}
                                 />
                             </div>
                             <div className={styles.formGroup}>
@@ -143,6 +171,7 @@ export default function BookingPage() {
                                     className={styles.input}
                                     value={formData.time}
                                     onChange={handleChange}
+                                    disabled={isLoading}
                                 />
                             </div>
                         </div>
@@ -155,13 +184,23 @@ export default function BookingPage() {
                                 className={styles.textarea}
                                 value={formData.additionalMessage}
                                 onChange={handleChange}
+                                disabled={isLoading}
                             ></textarea>
                         </div>
 
-                        <button type="submit" className={styles.submitBtn}>
-                            Book Appointment
+                        <button 
+                            type="submit" 
+                            className={styles.submitBtn}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Booking...' : 'Book Appointment'}
                         </button>
-                        {statusMessage && <p className={styles.statusMessage}>{statusMessage}</p>}
+                        
+                        {result && (
+                            <p className={`${styles.statusMessage} ${isError ? styles.error : styles.success}`}>
+                                {result}
+                            </p>
+                        )}
                     </form>
                 </div>
             </div>

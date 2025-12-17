@@ -97,6 +97,33 @@
     transform: translateY(-2px);
 }
 
+.submitBtn:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.statusMessage {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 4px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.success {
+    background-color: #e6f9f0;
+    color: #008a4c;
+    border: 1px solid #b3e6d1;
+}
+
+.error {
+    background-color: #fdeaea;
+    color: #d92d20;
+    border: 1px solid #f9c9c5;
+}
+
 @media (max-width: 600px) {
     .formWrapper {
         padding: 30px;
