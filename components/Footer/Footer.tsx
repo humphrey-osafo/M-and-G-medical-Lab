@@ -44,7 +44,7 @@ export default function Footer() {
                         </div>
                         <div className={styles.contactItem}>
                             <Mail size={18} />
-                            <span>info@mgdiagnostic.com</span>
+                            <span>mgmedicallaboratory96@gmail.com</span>
                         </div>
                     </div>
 
